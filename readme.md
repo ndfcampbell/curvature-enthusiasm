@@ -4,14 +4,6 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![JAX](https://img.shields.io/badge/JAX-0.7.2+-orange.svg)](https://github.com/google/jax)
 
-This work is licensed under a
-[Creative Commons Attribution-ShareAlike 4.0 International License][cc-by-sa].
-
-[![CC BY-SA 4.0][cc-by-sa-image]][cc-by-sa]
-
-[cc-by-sa]: http://creativecommons.org/licenses/by-sa/4.0/
-[cc-by-sa-image]: https://licensebuttons.net/l/by-sa/4.0/88x31.png
-[cc-by-sa-shield]: https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg
 ![Paper teaser](assets/sizzle_image.png)
 
 This repository contains the official code release for **Curvature Enthusiasm — Correspondence-Free Interpolation and Matching of Articulated 3D Shapes using Compressed Normal Cycles**
@@ -294,19 +286,18 @@ To change the target volume, modify the `desired_volume` parameter in your datas
 
 ### Keypoints File Format
 
-Plain text file with sparse correspondences, one pair per line:
+Plain text file with sparse correspondences as a comma-separated list of vertex indices:
 ```
-<source_vertex_index> <target_vertex_index>
-<source_vertex_index> <target_vertex_index>
-...
+# source_id target_id
+<source_vertex_indices> 
+<target_vertex_indices>
 ```
 
-Example (`keypoints/01_01r-01_02r.txt`):
+Example (`keypoints/test_keypoints_file.txt`):
 ```
-0 0
-145 152
-389 401
-1024 1056
+# source_id target_id
+0, 145, 389, 1024
+0, 152, 401, 1056
 ```
 
 Vertex indices are 0-based and must be valid for their respective meshes.
@@ -354,7 +345,7 @@ curvature-enthusiasm/
 │   ├── metrics/                    # Evaluation metrics
 │   ├── model/                      # Neural ODE models
 │   ├── utils/                      # Utility functions
-│   └── train.py                    # Training loop
+│   └── train_loop.py               # Training loop
 ├── data/                           # Dataset directory
 │   └── <DATASET_NAME>/             # e.g., MANO, SMPL, FAUST
 │       ├── keypoints/              # Sparse correspondences (optional)
@@ -418,7 +409,7 @@ OPT:
   PEAK_LR: 3.0e-3
   END_LR: 1.0e-4
   WARMUP_STEPS: 100
-
+  EVAL_PER_EPOCHS: 500
 NODE:
   N_ODE_STEPS: 10
   USE_DIV_FREE: False
@@ -451,6 +442,8 @@ CONSTRAINTS:
 FINE_TUNING:
   USE_FINE_TUNING: True
   FT_NUM_ITERS: 2000
+  COMPRESS_SOURCE: False
+  COMPRESS_TARGET: False
   BONE_SAMPLE_EP: 2.0e2
   BONE_SAMPLE_TRAJ: 5.0
   SURFACE_ACAP: 5.0e3
@@ -483,6 +476,7 @@ RESULTS:
 - **`PEAK_LR`** — Peak learning rate during training (default: `3.0e-3`)
 - **`END_LR`** — Final learning rate after decay (default: `1.0e-4`)
 - **`WARMUP_STEPS`** — Number of warmup steps for learning rate schedule
+- **`EVAL_PER_EPOCHS`** — Number of steps between evaluations (default: `500`) Note: when using compressed source, this doubles as is when varifold / normal cycle weights are updated)
 
 #### Neural ODE Settings (`NODE`)
 
@@ -517,15 +511,6 @@ Hard constraints ensuring physically plausible deformations:
 - **`TISSUE_ACAP`** — Tissue ACAP constraint weight
 - **`KEY_POINTS_EP`** — Key points matching weight
 
-#### Fine-tuning (`FINE_TUNING`)
-
-- **`USE_FINE_TUNING`** — Enable fine-tuning phase after main training
-- **`FT_NUM_ITERS`** — Number of fine-tuning iterations
-- **`BONE_SAMPLE_EP`** — Increased endpoint constraint for fine-tuning
-- **`BONE_SAMPLE_TRAJ`** — Increased trajectory constraint for fine-tuning
-- **`SURFACE_ACAP`** — Surface constraint during fine-tuning
-- **`TISSUE_ACAP`** — Tissue constraint during fine-tuning
-
 #### Compression (`COMPRESSION`)
 
 - **`COMPRESS_SOURCE`** — Compress source mesh
@@ -534,6 +519,17 @@ Hard constraints ensuring physically plausible deformations:
 - **`COMPRESSED_VARIFOLD_TARGET_SIZE`** — Number of target compressed points for varifold matching
 - **`COMPRESSED_NORMAL_CYCLE_SOURCE_SIZE`** — Number of source compressed points for normal cycle matching
 - **`COMPRESSED_NORMAL_CYCLE_TARGET_SIZE`** — Number of target compressed points for normal cycle matching
+
+#### Fine-tuning (`FINE_TUNING`)
+
+- **`USE_FINE_TUNING`** — Enable fine-tuning phase after main training
+- **`FT_NUM_ITERS`** — Number of fine-tuning iterations
+- **`COMPRESS_SOURCE`** — Compress source mesh when fine-tuning
+- **`COMPRESS_TARGET`** — Compress target mesh when fine-tuning
+- **`BONE_SAMPLE_EP`** — Increased endpoint constraint for fine-tuning
+- **`BONE_SAMPLE_TRAJ`** — Increased trajectory constraint for fine-tuning
+- **`SURFACE_ACAP`** — Surface constraint during fine-tuning
+- **`TISSUE_ACAP`** — Tissue constraint during fine-tuning
 
 #### Results (`RESULTS`)
 
@@ -651,7 +647,14 @@ If you find this work useful, please cite our paper:
 
 ## License
 
-This software is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+This software is licensed under a
+[Creative Commons Attribution-ShareAlike 4.0 International License][cc-by-sa].
+
+[![CC BY-SA 4.0][cc-by-sa-image]][cc-by-sa]
+
+[cc-by-sa]: http://creativecommons.org/licenses/by-sa/4.0/
+[cc-by-sa-image]: https://licensebuttons.net/l/by-sa/4.0/88x31.png
+[cc-by-sa-shield]: https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg
 
 ## Acknowledgments  
 
