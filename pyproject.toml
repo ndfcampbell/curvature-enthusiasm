@@ -1,0 +1,134 @@
+[project]
+name = "curvature-enthusiasm"
+version = "0.0.1"
+description = "Code release for the paper: Curvature Enthusiasm — Correspondence-Free Interpolation and Matching of Articulated 3D Shapes using Compressed Normal Cycles"
+readme = "readme.md"  # <-- match your filename's case
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+authors = [
+  { name = "Adam Hartshorne", email = "ath35@bath.ac.uk" },
+  { name = "Allen Paul", email = "ap2746@bath.ac.uk" },
+  { name = "Tony Shardlow", email = "t.shardlow@bath.ac.uk" },
+  { name = "Neill D F Campbell", email = "neill.campbell@ucl.ac.uk" }
+]
+
+keywords = [
+  "3D shapes", "shape interpolation", "diffeomorphisms",
+  "normal cycles", "articulated models", "computer graphics"
+]
+
+dependencies = [
+    "optax==0.2.6",
+    "trimesh==4.8.2",
+    "einops==0.8.1",
+    "jax-dataloader==0.1.3",
+    "probdiffeq==0.8.0",
+    "point-cloud-utils==0.34.0",
+    "pandas==2.3.2",
+    "equinox==0.13.1",
+    "tqdm==4.67.1",
+    "libigl==2.6.1",
+    "pykeops==2.3",
+    "polyscope==2.5.0",
+    "viser==1.0.10",
+    "matplotlib==3.10.6",
+    "wandb==0.22.0",
+    "pydantic==2.12.3",
+    "jaxlie",
+    "wadler_lindig",
+    "pyvista",
+    "plyfile",
+    "scikit-learn",
+    "pytetwild",
+    "open3d",
+    "seaborn",
+    # Git dependencies
+    "torch2jax @ git+https://github.com/rdyro/torch2jax.git",
+    "chumpy @ git+https://github.com/mattloper/chumpy@9b045ff5d6588a24a0bab52c83f032e2ba433e17",
+]
+
+
+#[project.optional-dependencies]
+#dev = ["pytest"]
+#cuda128 = []  # so `pip install .[cuda128]` is valid
+#
+#[build-system]
+#requires = ["hatchling"]
+#build-backend = "hatchling.build"
+#
+#[tool.hatch.metadata]
+#allow-direct-references = true  # needed for git+https:// deps
+#
+## Make a meta wheel (no importable package). Include just the README.
+#[tool.hatch.build.targets.wheel]
+#only-include = ["readme.md"]
+#include = ["LICENSE.md", "readme.md"]
+#
+#
+#
+#[project.optional-dependencies]
+#dev = [
+#    "pytest",
+#]
+#
+## If you expose a CLI later, add entries here:
+## [project.scripts]
+## mytool = "papercode.cli:main"
+#
+#[project.urls]
+#homepage = "https://github.com/yourusername/curvature-enthusiasm"
+#repository = "https://github.com/yourusername/curvature-enthusiasm"
+#paper = "https://arxiv.org/abs/<arxiv-id>"  # replace with actual ArXiv link
+#
+#
+#[build-system]
+#requires = ["hatchling"]
+#build-backend = "hatchling.build"
+#
+#[tool.hatch.metadata]
+#allow-direct-references = true
+#
+#
+#[tool.ruff.lint]
+#extend-select = ["D"]
+#extend-ignore = ["D100","D104"]
+#ignore = [    # Unnecessary collection call
+#    "C408",
+#    # Unnecessary map usage
+#    "C417",
+#    # Unnecessary dict comprehension for iterable
+#    "C420",
+#    # Object names too complex
+#    "C901",
+#    # Local variable is assigned to but never used
+#    "F841",
+#    # Class could be dataclass or namedtuple
+#    "B903",
+#    # Raise with from clause inside except block
+#    "B904",
+#    # Zip without explicit strict parameter
+#    "B905",
+#    "F722"
+#]
+#
+#[tool.ruff.lint.pydocstyle]
+#convention = "google"
+
+# -------------------------------------------------------------------------
+# Notes:
+# - torch/jax wheels for CUDA 12.8 are distributed via the PyTorch/JAX indexes.
+#   Users may need to run uv with `--index-url`:
+#     uv pip install torch==2.8.0+cu128 --index-url https://download.pytorch.org/whl/cu128
+#   and JAX with:
+#     uv pip install jax jaxlib==0.7.2+cuda128.cudnn89 \
+#       -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+#
+# - Consider adding a `requirements-cuda.txt` with the exact install commands.
+# -------------------------------------------------------------------------
+
+
+# from repo root
+#uv sync          # creates .venv from the lock (or run anything with `uv run ...`)
+#uv run python -c "import jax, torch; print(jax.__version__, torch.__version__)"
+
